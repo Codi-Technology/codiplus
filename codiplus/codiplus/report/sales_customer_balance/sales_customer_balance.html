@@ -1,0 +1,241 @@
+<html>
+
+	<head>
+		<style>
+		@media print {
+			.print-footer {
+			position: fixed;
+			bottom: 1px;
+			left: 0;
+			right: 0;
+		}
+	}
+		</style>
+	</head>
+
+<div class="print-format landscape" id="m2" style="position:relative;width: 100%;height: 100%;">
+
+
+
+
+<h2 class="text-center">{%= __("Customer Tansaction Balance") %}</h2>
+
+
+
+{% if(filters.customer) { %}
+<h5 class="text-center">{%= filters.customer %}</h5>
+{% } %}
+
+
+<h5 class="text-left ml-20px" style=" text-align: center;">
+
+    {% if (filters.from_date) { %}
+    {%= __("From Date") %}: <span style="margin-right:10px;border:1px solid black;padding: 2px;">{%= filters.from_date %}</span>
+	{% }
+
+	if (filters.to_date) { %}
+	{%= __("To Date") %}: <span style="border:1px solid black;padding: 2px;">{%= filters.to_date %}</span><br>
+	{% }
+
+	%}
+
+</h5>
+
+
+<hr>
+
+
+
+{% if (filters.customer) { %}
+	<!-- <strong>{%= __("Customer Info") %}</strong> -->
+	<table class="table" style="border:none;min-width: fit-content;max-width: 40%;">
+		<tbody>
+				<!-- <tr style="border:none;">
+					<td style="border:none;">{%= __("Customer") %}:  {%=  filters.customer %}</td>
+				</tr>
+				<tr>
+					<td style="border:none;">{%= __("Address Line") %}: {%= data[data.length-1]["address_data"][0]["address_line1"] %}</td>
+				</tr> -->
+				<tr>
+					<td style="border:none;">{%= __("City") %}: {%= data[data.length-1]["address_data"][0]["city"] %}</td>
+					<td style="border:none;">{%= __("Phone") %}:  {%= data[data.length-1]["contacts_data"][0]["phone"]%}</td>
+					<td style="border:none;">{%= __("Sales Partner") %}: {%= data[data.length-1]["sales_partner"]%}</td>
+
+
+				</tr>
+				<!-- <tr>
+					<td style="border:none;">{%= __("Territory") %}: {%= data[data.length-1]["territory"]%}</td>
+				</tr> -->
+				<!-- <tr style="border:none;">
+					<td style="border:none;">{%= __("Phone") %}:  {%= data[data.length-1]["contacts_data"][0]["phone"]%}</td>
+				</tr>
+
+
+				<tr>
+					<td style="border:none;">{%= __("Sales Partner") %}: {%= data[data.length-1]["sales_partner"]%}</td>
+				</tr> -->
+
+
+		</tbody>
+
+		</table>
+
+{% }
+		%}
+
+
+<table class="table table-bordered">
+
+	<thead>
+		<tr>
+			<th style="width: 5%; text-align: center;">{%= __("Num") %}</th>
+			<th style="width: 15%; text-align: center;">{%= __("Posting Date") %}</th>
+			<th style="width: 15%; text-align: center;">{%= __("Doctype") %}</th>
+			<th style="width: 20%; text-align: center;">{%= __("Voucher Number") %}</th>
+			<th style="width: 15%; text-align: center;">{%= __("Invoiced Amount") %}</th>
+			<th style="width: 15%; text-align: center;">{%= __("Paid Amount") %}</th>
+			<th class="text-center" style="width: 23%">{%= __("Outstanding Amount") %}</th>
+		</tr>
+	</thead>
+
+    <tbody>
+		<!-- add row if previous outstand -->
+		{% var row = 1; %}
+
+	{% if 'customer' in filters %}
+
+		<tr>
+			<td style="text-align: center">{%= row %}
+			<td style="text-align: center">{%= ""%}
+			<td style="text-align: center">{%= __("Opening Balance")%}</td>
+			<td style="text-align: center">{%= ""%}</td>
+			<td style="text-align: center">{%= __("") %}</td>
+			<td style="text-align: center">{%= ""%}</td>
+			<td style="text-align: center">{%= format_currency(data[data.length-1]["outstand_before"]) %}</td>
+
+		</tr>
+		{% endif %}
+
+		{% for(var i=0, l=data.length-1; i<l; i++)
+            { %}
+			{%  row += 1; %}
+
+			<tr>
+				<td style="text-align: center">{%= row %}
+				<td style="text-align: center">{%= data[i]["Posting Date"]%}
+				<td style="text-align: center">{%= data[i]["Doctype"]%}</td>
+				<td style="text-align: center">{%= data[i]["Voucher Number"]%}</td>
+				<td style="text-align: center">{%= data[i]["Invoiced Amount"]%}</td>
+				<td style="text-align: center">{%= data[i]["Paid Amount"]%}</td>
+				<td style="text-align: center">{%= format_currency(data[i]["Outstanding Amount"])%}</td>
+
+
+
+			</tr>
+		{% }
+        %}
+	</tbody>
+
+    </table>
+
+		<!--addtional cst data-->
+		<!-- {% if (filters.customer) { %}
+		<h5 style="text-align: left"> {%= __("Customer") %}: : {%= filters.customer %} Total Balance {%= data[data.length-1]["cst"]%}</h5> -->
+
+
+
+		<!-- debit or credit  -->
+		<table class="table table-bordered" style="min-width: fit-content;max-width: 50%;float: left;">
+			<thead>
+				<tr>
+					<th style="width: 50%"><strong>{%= __("Debit") %}</strong></th>
+					<th style="width: 50%"><strong>{%= __("Credit") %}</strong></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% if (data[data.length-1]["cst"]  >= 0.0 ) { %}
+				<tr>
+					<td > <strong>{%= format_currency(data[data.length-1]["cst"]) %}</strong></td>
+					<td ><strong>{%=format_currency(0.0)%} </strong></td>
+				</tr>
+				{% } else { %}
+				<tr>
+					<td ><strong>{%=format_currency(0.0)%}</strong></td>
+					<td > <strong>{%= format_currency(data[data.length-1]["cst"])%}</strong></td>
+				</tr>
+				{% } %}
+
+		</tbody>
+		</table>
+
+		{% }
+		%}
+
+		<!-- <div  id="m3" style="text-align:center;position: absolute;bottom: 1px;width:100%;background-color: aqua;">
+			<p>{%= __("In the event that this stage is intercepted in the third stage of this stage, it is considered a validation of data authentication") %}</p>
+			<!-- في حالة لم يتم الأعتراض على المذكور أعلاه خلال 14 يوم تعتبر هذه مصادقة على صحه البيانات -->
+			<!-- <p></p>
+			<p style="width:100%"> في حالة لم يتم الأعتراض على المذكور أعلاه خلال 14 يوم تعتبر هذه مصادقة على صحه البيانات</p>
+			<!-- <br>
+
+		</div> -->
+		<div style="clear: both;"></div>
+		<!-- <p style="text-align:center;position: absolute;bottom: 1px;width:100%;">
+				.في حالة لم يتم الأعتراض على المذكور أعلاه خلال 14 يوم تعتبر هذه مصادقة على صحه البيانات
+		</p> -->
+		<!-- <div id="footer" style="position: absolute;bottom: 1px;" >
+			hekoooooooo footer
+		</div> -->
+
+		<!-- <div id="footer-html" class="visible-pdf">
+			<div class="letter-head-footer">
+				hekoooooooo footer
+			</div>
+			<p class="text-center small page-number visible-pdf">
+				55
+			</p>
+		</div> -->
+
+		<!-- <p style="clear: both;"></p><br>
+		<div  id="m3" style="text-align:center;position: absolute;bottom: 1px;width:100%">
+			{%= __("حالة لم يتم الأعتراض على المذكور أعلاه خلال 14 يوم تعتبر هذه مصادقة على صحه البيانات") %}ي
+			<br>
+			<p style="width:100%"> في حالة لم يتم الأعتراض على المذكور أعلاه خلال 14 يوم تعتبر هذه مصادقة على صحه البيانات</p> -->
+		<!-- </div>  -->
+		<!-- <div  id="m3" style="text-align:center;position: absolute;bottom: 1px;width:100%">
+			في حالة لم يتم الأعتراض على المذكور أعلاه خلال 14 يوم تعتبر هذه مصادقة على صحه البيانات
+			<p style="width:100%"> في حالة لم يتم الأعتراض على المذكور أعلاه خلال 14 يوم تعتبر هذه مصادقة على صحه البيانات</p>
+		</div> -->
+
+		<!-- <div class="print-footer">
+			Hello footer
+		</div> -->
+		<!-- <div id="footer-html" class="print-footer" style="text-align:center;">
+			<div style="position: relative;" style="text-align:center;">
+				<div class="letter-head-footer" style="text-align:center;">
+					Hello 111111
+				</div>
+			</div>
+	</div> -->
+
+	</div>
+
+	<div id="footer-html" class="print-footer" >
+		<div style="position: relative;">
+			<div class="letter-head-footer" style="text-align:center;width:100%">
+				<strong>في حالة لم يتم الأعتراض على المذكور أعلاه خلال 14 يوم تعتبر هذه مصادقة على صحه البيانات</strong>
+			</div>
+		</div>
+</div>
+
+</html>
+<!-- <div class="print-footer">
+	Hello footer222222222222
+</div> -->
+
+
+
+
+
+
+
