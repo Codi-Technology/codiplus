@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include codiplus *.css
+recursive-include codiplus *.csv
+recursive-include codiplus *.html
+recursive-include codiplus *.ico
+recursive-include codiplus *.js
+recursive-include codiplus *.json
+recursive-include codiplus *.md
+recursive-include codiplus *.png
+recursive-include codiplus *.py
+recursive-include codiplus *.svg
+recursive-include codiplus *.txt
+recursive-exclude codiplus *.pyc
